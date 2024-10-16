@@ -2,8 +2,12 @@
     "manifest_version": 3,
     "name": "我的插件",
     "version": "1.0.0",
+    "permissions": [
+        "activeTab",
+        "storage"
+      ],
     "action": {
-        "default_popup": "index.html"
+        "default_popup": "popup.html"
     },
     "content_scripts": [
         {
@@ -11,8 +15,11 @@
                 "src/content.js"
             ],
             "matches": [
-                "https://www.google.com/*"
+                "<all_urls>"
             ]
         }
-    ]
+    ],
+    "background": {
+        "service_worker": "src/background.js"
+    }
 }
