@@ -39,9 +39,12 @@ function saveSettings() {
     </a>
   </div>
   <HelloWorld msg="Vite + Vue3" />
-  <p>{{ backendUrl }}</p>
-  <input type="text" v-model="backendUrl" placeholder="backend url" />
-  <button @click="saveSettings">保存</button>
+
+  <div>
+    <span>后台地址:</span><input type="text" v-model="backendUrl"/>
+    <button @click="saveSettings">保存</button>
+  </div>
+
 </template>
 
 <style scoped>
