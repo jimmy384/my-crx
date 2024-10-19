@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "es6": "node es6/test.js",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
