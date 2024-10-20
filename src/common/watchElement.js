@@ -5,7 +5,7 @@ const defaulNotFoundCallback = () => {
     alert("查找相关元素失败")
 }
 
-function onElementReady(findElement, foundCallback, notFoundCallback, depth) {
+function watchElement(findElement, foundCallback, notFoundCallback, depth) {
     notFoundCallback = notFoundCallback || defaulNotFoundCallback
     depth = depth || 0;
     if (depth > maxTime / interval) {
@@ -17,7 +17,7 @@ function onElementReady(findElement, foundCallback, notFoundCallback, depth) {
         if (elements == null || elements.length === 0) {
             console.log(`${interval}ms后尝试第${depth}次重试`)
             setTimeout(() => {
-                onElementReady(findElement, foundCallback, notFoundCallback, depth + 1)
+                watchElement(findElement, foundCallback, notFoundCallback, depth + 1)
             }, interval)
         } else {
             console.log(`第${depth}次重试成功`)
@@ -25,3 +25,5 @@ function onElementReady(findElement, foundCallback, notFoundCallback, depth) {
         }
     }
 }
+
+export default watchElement

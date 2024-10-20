@@ -1,10 +1,6 @@
 <script setup>
 import { onMounted, ref } from 'vue'  ;
-import HelloWorld from './components/HelloWorld.vue'
-import viteLogo from './assets/vite.svg';
-import vueLogo from './assets/vue.svg';
-const viteLogoUrl = chrome.runtime.getURL(viteLogo);
-const vueLogoUrl = chrome.runtime.getURL(vueLogo);
+
 const backendUrl = ref('');
 
 onMounted(() => {
@@ -30,15 +26,7 @@ function saveSettings() {
 </script>
 
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img :src="viteLogoUrl" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img :src="vueLogoUrl" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue3" />
+
 
   <div>
     <span>后台地址:</span><input type="text" v-model="backendUrl"/>

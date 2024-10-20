@@ -1,4 +1,6 @@
 import $ from 'jquery'
+import watchElement from './common/watchElement.js'
+import findNearbyElement from './common/findNearbyElement.js'
 
 console.log("content.js 加载成功")
 $(document).ready(() => {
@@ -17,42 +19,13 @@ $(document).ready(() => {
         console.log("没有找到输入框")
     }
 
-    // const nameInput = findNearbyElement("昵称", 'input')
-    // console.log(nameInput)
+    const findElement = () => findNearbyElement("昵称", 'input')
+    watchElement(findElement, () => {
+        console.log("找到昵称输入框")
+    })
+
     // console.log(findNearbyElement("我的签名", 'textarea'))
     // console.log(findNearbyElement("出生日期", 'input'))
     // console.log(findNearbyElement("用户名", 'span'))
 
-    // setElementValue(nameInput, "jimmy")
-
-
-    function findNearbyElement(labelText, tagType) {
-        const label = $(`*:contains('${labelText}')`)
-            .filter((index, item) => {
-                return $(item).children().length === 0
-            })
-            .first()
-        return doFindNearbyElement(label, tagType, 1)
-    }
-
-    function doFindNearbyElement(fromElement, tagType, depth) {
-        if (depth > 3) {
-            return null
-        }
-        const element = fromElement.nextAll().find(tagType).first()
-        if (element.length === 0) {
-            const newFromElement = fromElement.parent()
-            if (newFromElement.length === 0) {
-                return null
-            } else {
-                return doFindNearbyElement(newFromElement, tagType, depth + 1)
-            }
-        } else {
-            return element
-        }
-    }
-
-    function setElementValue(element, value) {
-        $(element).val(value).trigger('input');
-    }
 });
