@@ -19,13 +19,26 @@ $(document).ready(() => {
         console.log("没有找到输入框")
     }
 
-    const findElement = () => findNearbyElement("昵称", 'input')
-    watchElement(findElement, () => {
-        console.log("找到昵称输入框")
-    })
+    start()
 
-    // console.log(findNearbyElement("我的签名", 'textarea'))
-    // console.log(findNearbyElement("出生日期", 'input'))
-    // console.log(findNearbyElement("用户名", 'span'))
+    // const findElement = () => findNearbyElement("账号", 'input')
+    // watchElement(findElement)
+    //     .then(element => {
+    //         console.log("找到的元素: ", element)
+    //     })
+    //     .catch(err => {
+    //         alert("查找相关元素失败")
+    //     })
 
+    async function start() {
+        const findElement = () => findNearbyElement("账号", 'input')
+        try {
+            const element = await watchElement(findElement)
+            console.log("找到的元素: ", element)
+        } catch (err) {
+            console.log("查找相关元素失败")
+            alert("查找相关元素失败")
+        }
+        
+    } 
 });
