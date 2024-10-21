@@ -1,7 +1,8 @@
 import { AxiosError } from 'axios';
-import httpRequest from './common/httpRequest.js'
+import httpRequest from './common/background/httpRequest'
 
-// 
+const CLIENT_ERROR_CODE = "ClientError"
+
 /**
  * 读取配置参数
  * 入参:
@@ -51,13 +52,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
  * 入参:
  * {
  *     action: "sendRequest",
- *     method: "POST",
- *     path: "/api/v1/user",
- *     params: {
- *         "id": 123    
- *     },
- *     data: {},
  *     config: {
+ *         method: "POST",
+ *         url: "/api/v1/user",
+ *         params: {
+ *             "id": 123    
+ *         },
+ *         data: {},
  *         headers: {
  *             "Authorization": "Bearer xxx"
  *         },
@@ -75,77 +76,29 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === "sendRequest") {
         chrome.storage.local.get(null, result => {
-            const method = message.method
-            const url = result.backendUrl + message.path
-            if (method === "GET") {
-                httpRequest.get(url, message.params, message.config)
-                    .then(body => {
-                        sendResponse(body)
-                    }, body => {
-                        handleError(body, sendResponse) 
-                    })
-            } else if (method === "POST") {
-                httpRequest.post(url, message.params, message.data, message.config)
-                    .then(body => {
-                        sendResponse(body)
-                    }, body => {
-                        handleError(body, sendResponse) 
-                    })
-            } else if (method === "PUT") {
-                httpRequest.put(url, message.params, message.data, message.config)
-                    .then(body => {
-                        sendResponse(body)
-                    }, body => {
-                        handleError(body, sendResponse) 
-                    })
-            } else if (method === "DELETE") {
-                httpRequest.del(url, message.params, message.data, message.config)
-                    .then(body => {
-                        sendResponse(body)
-                    }, body => {
-                        handleError(body, sendResponse) 
-                    })
-            } else {
-                sendResponse({
-                    "success": false,
-                    "errCode": "ClientError",
-                    "errMsg": `background script的sendRequest不支持${httpRequest.method}请求方法`
+            const requestConfig = message.config
+            requestConfig.baseURL = result.backendUrl
+            requestConfig.url = requestConfig.url
+            httpRequest.request(requestConfig)
+                .then(body => {
+                    // 服务器返回200
+                    sendResponse(body)
                 })
-            }
-
-            // fetch(url, {
-            //     method: message.method,
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //     },
-            //     body: JSON.stringify(message.param),
-            // }).then(response => {
-            //     if (response.status !== 200) {
-            //         throw new Error(`请求失败, 响应码:${response.status}`)
-            //     }
-            //     return response.json()
-            // }).then(data => {
-            //     console.log("处理接口返回数据", data);
-            //     sendResponse(data);
-            // }).catch(error => {
-            //     console.error('请求出错:', error);
-            // });
+                .catch(error => {
+                    if (error instanceof AxiosError) {
+                        // 客户端请求发送失败
+                        sendResponse({
+                            success: false,
+                            errCode: CLIENT_ERROR_CODE,
+                            errMsg: error.message,
+                            data: error
+                        })
+                    } else {
+                        // 服务器返回非200
+                        sendResponse(error);
+                    }
+                })
         });
     }
     return true;
 })
-
-function handleError(body, sendResponse) {
-    let errorResult;
-    if (body instanceof AxiosError) {
-        errorResult = {
-            success: false,
-            errCode: "ClientError",
-            errMsg: body.message,
-            data: body
-        }
-    } else {
-        errorResult = body
-    }
-    sendResponse(errorResult);
-}

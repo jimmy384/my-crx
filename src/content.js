@@ -1,6 +1,7 @@
 import $ from 'jquery'
-import watchElement from './common/watchElement.js'
-import findNearbyElement from './common/findNearbyElement.js'
+import watchElement from './common/frontend/watchElement'
+import findNearbyElement from './common/frontend/findNearbyElement'
+import sendRequest from './common/frontend/chrome'
 
 console.log("content.js 加载成功")
 $(document).ready(() => {
@@ -15,36 +16,21 @@ $(document).ready(() => {
         console.log("没有找到输入框")
     }
 
-    const message = {
-        action: "sendRequest",
-        method: "POST",
+    sendRequest({
+        method: "post",
         path: "/test",
         params: { "name": "jimmy" }
-    }
-    chrome.runtime.sendMessage(message, response => {
-        console.log("请求结果:", response)
+    }).then(data => {
+        console.log("请求结果:", data)
     })
 
-    start()
-
-    // const findElement = () => findNearbyElement("账号", 'input')
-    // watchElement(findElement)
-    //     .then(element => {
-    //         console.log("找到的元素: ", element)
-    //     })
-    //     .catch(err => {
-    //         alert("查找相关元素失败")
-    //     })
-
-    async function start() {
-        const findElement = () => findNearbyElement("账号", 'input')
-        try {
-            const element = await watchElement(findElement)
+    const findElement = () => findNearbyElement("账号", 'input')
+    watchElement(findElement)
+        .then(element => {
             console.log("找到的元素: ", element)
-        } catch (err) {
-            console.log("查找相关元素失败")
+        })
+        .catch(err => {
             alert("查找相关元素失败")
-        }
+        })
 
-    }
 });
