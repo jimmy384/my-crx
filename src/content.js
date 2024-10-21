@@ -30,7 +30,7 @@ $(document).ready(() => {
             console.log("找到的元素: ", element)
         })
         .catch(err => {
-            alert("查找相关元素失败")
+            alert("查找相关元素失败", err)
         })
 
 });
