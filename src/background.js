@@ -103,9 +103,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true;
 })
 
+let triggerCount = 0
 chrome.alarms.onAlarm.addListener((alarm) => {
     if (alarm.name === 'test') {
         console.log("alarm triggered")
+        triggerCount++
+        // chrome.tts.speak(`定时任务触发第${triggerCount}次`);
+        chrome.action.setBadgeText({ text: "" + triggerCount });
+        chrome.action.setBadgeBackgroundColor({ color: '#FF0000' });
     }
 });
 

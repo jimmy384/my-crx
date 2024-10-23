@@ -5,7 +5,8 @@
     "permissions": [
         "activeTab",
         "storage",
-        "alarms"
+        "alarms",
+        "tts"
       ],
     "action": {
         "default_popup": "popup.html"
