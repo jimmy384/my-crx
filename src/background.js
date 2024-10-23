@@ -102,3 +102,19 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
     return true;
 })
+
+chrome.alarms.onAlarm.addListener((alarm) => {
+    if (alarm.name === 'test') {
+        console.log("alarm triggered")
+    }
+});
+
+chrome.runtime.onInstalled.addListener(async ({ reason }) => {
+    if (reason !== 'install') {
+        return
+    }
+
+    await chrome.alarms.create('test', {
+        periodInMinutes: 1
+    });
+});

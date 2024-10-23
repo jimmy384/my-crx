@@ -4,7 +4,8 @@
     "version": "1.0.0",
     "permissions": [
         "activeTab",
-        "storage"
+        "storage",
+        "alarms"
       ],
     "action": {
         "default_popup": "popup.html"
@@ -16,7 +17,8 @@
             ],
             "matches": [
                 "<all_urls>"
-            ]
+            ],
+            "css": ["contentStyle.css"]
         }
     ],
     "background": {

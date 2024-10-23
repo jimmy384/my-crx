@@ -16,6 +16,25 @@ $(document).ready(() => {
         console.log("没有找到输入框")
     }
 
+    const toggleSwitchHtaml = `
+        <div class="switch">
+            <span>MR检视模式</span>
+            <input id="toggle" type="checkbox" class="switch-checkbox">
+            <label class="switch-label" for="toggle">
+                <span class="switch-inner"></span>
+                <span class="switch-switch"></span>
+            </label>
+        </div>
+    `
+    $("#form").append(toggleSwitchHtaml)
+
+    // 添加事件监听器
+    $("#toggle").on("change", () => {
+        const toggle = document.getElementById('toggle');
+        console.log(toggle.checked)
+    })
+
+    /*
     sendRequest({
         method: "post",
         path: "/test",
@@ -32,5 +51,5 @@ $(document).ready(() => {
         .catch(err => {
             alert("查找相关元素失败", err)
         })
-
+    */
 });
