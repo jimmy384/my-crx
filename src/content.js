@@ -17,14 +17,15 @@ $(document).ready(() => {
     }
 
     const toggleSwitchHtaml = `
-        <div class="switch">
+        <div class="plugin-switch">
             <span>MR检视模式</span>
-            <input id="toggle" type="checkbox" class="switch-checkbox">
-            <label class="switch-label" for="toggle">
-                <span class="switch-inner"></span>
-                <span class="switch-switch"></span>
+            <input id="toggle" type="checkbox" class="plugin-switch-checkbox">
+            <label class="plugin-switch-label" for="toggle">
+                <span class="plugin-switch-inner"></span>
+                <span class="plugin-switch-switch"></span>
             </label>
         </div>
+        <button class="fancy-button">测试</button>
     `
     $("#form").append(toggleSwitchHtaml)
 
