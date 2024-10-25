@@ -1,7 +1,7 @@
 import $ from 'jquery'
-import watchElement from './common/frontend/watchElement'
-import findNearbyElement from './common/frontend/findNearbyElement'
-import sendRequest from './common/frontend/chrome'
+import watchElement from './common/content/watchElement'
+import findNearbyElement from './common/content/findNearbyElement'
+import dispatcher from './common/content/dispatcher'
 
 console.log("content.js 加载成功")
 $(document).ready(() => {
@@ -36,7 +36,7 @@ $(document).ready(() => {
     })
 
     /*
-    sendRequest({
+    dispatcher.sendRequest({
         method: "post",
         path: "/test",
         params: { "name": "jimmy" }

@@ -2,7 +2,7 @@
  * 发送请求，发消息给background script，实际请求由background script发送
  * 此方法是给content script调用的
  */
-export default function sendRequest(config) {
+function sendRequest(config) {
     const message = {
     action: "sendRequest",
         config: config
@@ -13,4 +13,8 @@ export default function sendRequest(config) {
             resolve(data)
         })
     })
+}
+
+export default {
+    sendRequest
 }
