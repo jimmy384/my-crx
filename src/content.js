@@ -4,7 +4,7 @@ import findNearbyElement from './common/content/findNearbyElement'
 import dispatcher from './common/content/dispatcher'
 
 console.log("content.js 加载成功")
-$(document).ready(() => {
+$(() => {
     console.log("jquery ready")
     // 使用jQuery找到页面的第一个输入框
     var firstInput = $('input:first')
@@ -16,6 +16,7 @@ $(document).ready(() => {
         console.log("没有找到输入框")
     }
 
+    /*
     const toggleSwitchHtaml = `
         <div class="plugin-switch">
             <span>MR检视模式</span>
@@ -34,6 +35,7 @@ $(document).ready(() => {
         const toggle = document.getElementById('toggle');
         console.log(toggle.checked)
     })
+    */
 
     /*
     dispatcher.sendRequest({

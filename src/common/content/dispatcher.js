@@ -3,12 +3,11 @@
  * 此方法是给content script调用的
  */
 function sendRequest(config) {
-    const message = {
-    action: "sendRequest",
-        config: config
-    }
     return new Promise((resolve, reject) => {
-        chrome.runtime.sendMessage(message, data => {
+        chrome.runtime.sendMessage({
+            action: "sendRequest",
+            config: config
+        }, data => {
             // TODO 看情况要不要解析到错误就调reject
             resolve(data)
         })
