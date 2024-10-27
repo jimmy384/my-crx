@@ -1,11 +1,12 @@
 <script setup>
-import { onMounted, ref } from 'vue'  ;
+import { onMounted, ref } from 'vue'
+import dispatcher from './common/content/dispatcher'
 
 const backendUrl = ref('');
 
 onMounted(() => {
   // 挂载后读取持久化的设置
-  chrome.runtime.sendMessage({ action: "getConfig" }, response => {
+  dispatcher.getConfig().then(response => {
     console.log("获取配置:", response)
     backendUrl.value = response.backendUrl
   })
@@ -15,21 +16,16 @@ onMounted(() => {
  * 保存设置
  */
 function saveSettings() {
-  const message = {
-    action: "saveConfig", settings: { backendUrl: backendUrl.value }
-  }
-  chrome.runtime.sendMessage(message, response => {
+  const settings = { backendUrl: backendUrl.value }
+  dispatcher.saveConfig(settings).then(response => {
     console.log("保存设置结果:", response)
-  });
+  })
 }
-
 </script>
 
 <template>
-
-
   <div>
-    <span>后台地址:</span><input type="text" v-model="backendUrl"/>
+    <span>后台地址:</span><input type="text" v-model="backendUrl" />
     <button @click="saveSettings">保存</button>
   </div>
 

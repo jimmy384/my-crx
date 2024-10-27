@@ -14,6 +14,20 @@ function sendRequest(config) {
     })
 }
 
+function getConfig() {
+    return new Promise((resolve, reject) => {
+        chrome.runtime.sendMessage({ action: "getConfig" }, data => resolve(data))
+    })
+}
+
+function saveConfig(settings) {
+    return new Promise((resolve, reject) => {
+        chrome.runtime.sendMessage({ action: "saveConfig", settings }, data => resolve(data))
+    })
+}
+
 export default {
-    sendRequest
+    sendRequest,
+    getConfig,
+    saveConfig
 }

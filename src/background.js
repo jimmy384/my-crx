@@ -1,5 +1,5 @@
-import { AxiosError } from 'axios';
-import httpRequest from './common/background/httpRequest'
+import { AxiosError } from "axios";
+import httpRequest from "./common/background/httpRequest"
 
 const CLIENT_ERROR_CODE = "ClientError"
 
@@ -105,21 +105,20 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 let triggerCount = 0
 chrome.alarms.onAlarm.addListener((alarm) => {
-    if (alarm.name === 'test') {
+    if (alarm.name === "check") {
         console.log("alarm triggered")
         triggerCount++
-        // chrome.tts.speak(`定时任务触发第${triggerCount}次`);
         chrome.action.setBadgeText({ text: "" + triggerCount });
-        chrome.action.setBadgeBackgroundColor({ color: '#FF0000' });
+        chrome.action.setBadgeBackgroundColor({ color: "#FF0000" });
     }
 });
 
 chrome.runtime.onInstalled.addListener(async ({ reason }) => {
-    if (reason !== 'install') {
+    if (reason !== "install") {
         return
     }
 
-    await chrome.alarms.create('test', {
+    await chrome.alarms.create("check", {
         periodInMinutes: 1
     });
 });
