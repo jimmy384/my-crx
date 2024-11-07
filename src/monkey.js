@@ -33,7 +33,7 @@
                         info[key] = value
                     } else if (field.type === "arrayObject") {
                         const extractValueFn = this.getExtractValueFn(field)
-                        const elements = extractValueFn.apply(this, [current, field])
+                        const elements = this.jqueryListToArray(extractValueFn.apply(this, [current, field]))
                         const value = elements.map(element => this.handleFields(element, field.fields))
                         info[key] = value
                     } else {
@@ -133,7 +133,7 @@
                 const evalCtx = { context }
                 const isListDetailPage = detailPage.collection != null // 没有配置collection，则认为是单个详情页
                 let list = isListDetailPage ? this.doEval(detailPage.collection, evalCtx) : [evalCtx]
-                list = list.jquery ? list.toArray() : list
+                list = this.jqueryListToArray(list)
                 const itemKey = detailPage.itemKey || "item"
                 const detailPageInfoList = []
                 for (const item of list) {
@@ -161,7 +161,7 @@
             if (listPage) {
                 const hasNextPage = context.listPage.totalPage && pageNum < context.listPage.totalPage || context.listPage.hasNextPage
                 if (hasNextPage) {
-                    this.callFlow(flowDefinition, pageNum + 1)
+                    // this.callFlow(flowDefinition, pageNum + 1)
                 }
             }
         }
@@ -183,6 +183,10 @@
 
         async parseCurl(curl) {
             return null
+        }
+
+        jqueryListToArray(list) {
+            return list.jquery ? list.toArray() : list
         }
     }
 
