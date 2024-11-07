@@ -136,6 +136,7 @@
                 list = this.jqueryListToArray(list)
                 const itemKey = detailPage.itemKey || "item"
                 const detailPageInfoList = []
+                const resultList = []
                 for (const item of list) {
                     // 获取详情页地址
                     evalCtx[itemKey] = item
@@ -147,14 +148,21 @@
                     }
                     // 请求详情页面
                     console.log(`请求详情`)
-                    const detailPageData = await this.sendRequest(detailPage)
-                    const detailPageInfo = this.handleFields(detailPageData, detailPage.fields)
-                    detailPageInfoList.push(detailPageInfo)
+                    resultList.push(
+                        this.sendRequest(detailPage).then(detailPageData => {
+                            const detailPageInfo = this.handleFields(detailPageData, detailPage.fields)
+                            detailPageInfoList.push(detailPageInfo)
+                            return detailPageInfo
+                        })
+                    )
                     break
                 }
-                context.detailPage = detailPageInfoList
+                Promise.all(resultList).then(list => {
+                    console.log(list)
+                    context.detailPage = detailPageInfoList
+                    console.log("全部完成后的context", context)
+                })
             }
-
             console.log(context)
 
             // 抓取下一页
