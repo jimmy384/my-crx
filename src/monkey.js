@@ -29,11 +29,11 @@
                     const key = field.key
                     if (field.type === "simple" || field.type === "arraySimple") {
                         const extractValueFn = this.getExtractValueFn(field)
-                        const value = extractValueFn(current, field)
+                        const value = extractValueFn.apply(this, [current, field])
                         info[key] = value
                     } else if (field.type === "arrayObject") {
                         const extractValueFn = this.getExtractValueFn(field)
-                        const elements = extractValueFn(current, field)
+                        const elements = extractValueFn.apply(this, [current, field])
                         const value = elements.map(element => this.handleFields(element, field.fields))
                         info[key] = value
                     } else {
@@ -60,7 +60,7 @@
         }
 
         extractValueSelector(current, field) {
-            return doEval(field.selector, { current: current })
+            return this.doEval(field.selector, { current: current })
         }
 
         doEval(script, context) {
@@ -132,7 +132,8 @@
             if (detailPage) {
                 const evalCtx = { context }
                 const isListDetailPage = detailPage.collection != null // 没有配置collection，则认为是单个详情页
-                const list = isListDetailPage ? this.doEval(detailPage.collection, evalCtx) : [evalCtx]
+                let list = isListDetailPage ? this.doEval(detailPage.collection, evalCtx) : [evalCtx]
+                list = list.jquery ? list.toArray() : list
                 const itemKey = detailPage.itemKey || "item"
                 const detailPageInfoList = []
                 for (const item of list) {
