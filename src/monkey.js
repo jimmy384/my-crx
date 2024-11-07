@@ -6,12 +6,12 @@
 // @author       Jimmy
 // @match        https://www.baidu.com/
 // @require      https://cdn.bootcss.com/jquery/3.7.1/jquery.min.js
+// @require      https://cdn.jsdelivr.net/npm/jsonpath-plus@10.1.0/dist/index-browser-umd.min.cjs
 // @run-at       document-end
 // @include      https://v1.wzip.download
 // @connect      *
 // @grant        unsafeWindow
 // @grant        GM_xmlhttpRequest
-// @grant        GM_download
 // ==/UserScript==
 
 (function () {
