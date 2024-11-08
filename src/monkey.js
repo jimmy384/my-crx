@@ -15,13 +15,17 @@
 // ==/UserScript==
 
 (function () {
-    'use strict';
+    'use strict'
 
     /**
      * 抽象爬虫
      * 拥有提取字段的能力
      */
     class AbstractCrawler {
+        constructor() {
+            console.log("提取html的网页会用到jquery")
+        }
+
         handleFields(current, fields) {
             const info = {}
             if (fields) {
@@ -37,7 +41,7 @@
                         const value = elements.map(element => this.handleFields(element, field.fields))
                         info[key] = value
                     } else {
-                        console.warn(`不支持的类型${field.type}`)
+                        console.warn(`不支持的类型:${field.type}`)
                     }
                 }
             }
@@ -66,11 +70,11 @@
         doEval(script, context) {
             const argNames = Object.keys(context)
             const argValues = Object.values(context)
-            const func = new Function(argNames, "return " + script);
+            const func = new Function(argNames, "return " + script)
             try {
                 return func.apply(null, argValues)
             } catch (e) {
-                console.error("执行出错, 脚本:", script)
+                console.error(`执行出错, 脚本:${script}`)
                 throw e
             }
         }
@@ -103,10 +107,12 @@
             this.sendRequestFn = sendRequestFn
         }
 
-        async callFlow(pageNum) {
-            pageNum = !pageNum ? 1 : pageNum
+        async callFlow(config) {
+            config = !config ? { pageNum: 1 } : config
+            config.pageNum = !config.pageNum ? 1 : config.pageNum
+            const { pageNum } = config
             const flowInst = JSON.parse(JSON.stringify(this.flowDefinition))
-            const {listPage, detailPage} = flowInst
+            const { listPage, detailPage } = flowInst
 
             // 存储某一页列表页面和这一页所有详情的信息
             const context = {}
@@ -114,10 +120,10 @@
             // 请求列表页面
             if (listPage) {
                 if (listPage.url) {
-                    listPage.url = this.doEval("`" + listPage.url + "`", {pageNum})
+                    listPage.url = this.doEval("`" + this.flowDefinition.url + "`", { pageNum })
                 }
                 if (listPage.curl) {
-                    listPage.url = this.doEval("`" + listPage.curl + "`", {pageNum})
+                    listPage.curl = this.doEval("`" + this.flowDefinition.curl + "`", { pageNum })
                 }
 
                 console.log("请求列表")
@@ -134,7 +140,7 @@
                 const isListDetailPage = detailPage.collection != null // 没有配置collection，则认为是单个详情页
                 let list = isListDetailPage ? this.doEval(detailPage.collection, evalCtx) : [evalCtx]
                 list = this.jqueryListToArray(list)
-                const itemKey = detailPage.itemKey || "item"
+                const itemKey = detailPage.item || "item"
                 const detailPageInfoList = []
                 const resultList = []
                 for (const item of list) {
@@ -168,8 +174,9 @@
             // 抓取下一页
             if (listPage) {
                 const hasNextPage = context.listPage.totalPage && pageNum < context.listPage.totalPage || context.listPage.hasNextPage
-                if (hasNextPage) {
-                    // this.callFlow(flowDefinition, pageNum + 1)
+                if (hasNextPage && (config.maxPageNum && pageNum < config.maxPageNum)) {
+                    config.pageNum++
+                    this.callFlow(config)
                 }
             }
         }
@@ -178,7 +185,7 @@
             const requestInfo = await this.parseCurl(config.curl)
             if (requestInfo) {
                 if (requestInfo.params) {
-                    config.url = config.url + "?" + new URLSearchParams(requestInfo.params).toString()
+                    config.url = requestInfo.url + "?" + new URLSearchParams(requestInfo.params).toString()
                 } else {
                     config.url = requestInfo.url
                 }
@@ -245,7 +252,11 @@
     }
 
     const crawler = new ListDetailPageCrawler(flowDefinition, sendRequestFn)
-    crawler.callFlow()
+    const devConfig = {
+        pageNum: 1,
+        maxPageNum: 2
+    }
+    crawler.callFlow(devConfig)
 
     async function sendRequestFn(config) {
         return new Promise((resolve, reject) => {
@@ -257,10 +268,10 @@
                 onload: response => {
                     if (response.status === 200) {
                         // 获取某个特定的响应头，比如 "Content-Type"
-                        const contentType = response.responseHeaders.match(/Content-Type:\s*(.*)\s*/i);
-                        if (contentType) {
-                            console.log("Content-Type: ", contentType[1]);
-                            if (contentType[1].indexOf("json") >= 0) {
+                        const contentTypeLine = response.responseHeaders.match(/Content-Type:\s*(.*)\s*/i)
+                        if (contentTypeLine) {
+                            const contentType = contentTypeLine[1]
+                            if (contentType.indexOf("json") >= 0) {
                                 resolve(JSON.parse(response.responseText))
                                 return
                             }
